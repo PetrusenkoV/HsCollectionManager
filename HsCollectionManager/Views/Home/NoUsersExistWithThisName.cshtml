@@ -1,0 +1,9 @@
+﻿@model HsCollectionManager.Models.UserModel
+
+@{
+    ViewBag.Title = "NoUsersExistWithThisName";
+}
+
+<h2>Sorry, there are no users with this name. Make sure you've typed the name correctly and try again.</h2>
+@Html.ActionLink("Back to main screen", "index", null, new {@class = "btn btn-default"})
+

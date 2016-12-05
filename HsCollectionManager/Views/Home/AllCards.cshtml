@@ -1,0 +1,144 @@
+﻿@model HsCollectionManager.Models.SelectCards
+
+@{
+    ViewBag.Title = "AllCards";
+}
+<link href="~/Content/HideButtons.css" rel="stylesheet" />
+<h2>AllCards</h2>
+
+@ViewBag.Name
+@foreach (var item in Model.Cards)
+{
+    <div>
+        <h3>@item.Name</h3>
+        <img src="@item.Img" />
+        <button class="1">Add to Collection</button>
+        <button class="2 visible">Remove From Collection</button>
+    </div>
+}
+
+@Html.ActionLink("Finish", "Index");
+<script>
+    var addToCollection = function () {
+        var img = this.parentElement.getElementsByTagName('img');
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/InsertUserCard",
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            data: { CardImg: img[0].src, UserName: "@ViewBag.Name" },
+            success: function () {
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                // TODO: Show error
+            }
+        });
+
+        var btns = this.parentElement.getElementsByTagName('button');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle("visible");
+        }
+    }
+
+    var removeFromCollection = function () {
+        var img = this.parentElement.getElementsByTagName('img');
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/RemoveFromCollection",
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            data: { CardImg: img[0].src, UserName: "@ViewBag.Name" },
+            success: function () {
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                // TODO: Show error
+            }
+        });
+
+        var btns = this.parentElement.getElementsByTagName('button');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle("visible");
+        }
+    }
+
+    var btns1 = document.getElementsByClassName('1');
+    for (var i = 0; i < btns1.length; i++) {
+        btns1[i].addEventListener("click", addToCollection);
+    }
+
+    var btns2 = document.getElementsByClassName('2');
+    for (var i = 0; i < btns2.length; i++) {
+        btns2[i].addEventListener("click", removeFromCollection);
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+@*
+        this is the template for future to improve design
+
+        <div id="carousel" class="carousel">
+        <button class="arrow prev">⇦</button>
+        <div class="gallery">
+            <ul class="images">
+                <li><img src="https://js.cx/carousel/1.png"></li>
+                <li><img src="https://js.cx/carousel/2.png"></li>
+                <li><img src="https://js.cx/carousel/3.png"></li>
+                <li><img src="https://js.cx/carousel/4.png"></li>
+                <li><img src="https://js.cx/carousel/5.png"></li>
+                <li><img src="https://js.cx/carousel/6.png"></li>
+                <li><img src="https://js.cx/carousel/7.png"></li>
+                <li><img src="https://js.cx/carousel/8.png"></li>
+                <li><img src="https://js.cx/carousel/9.png"></li>
+                <li><img src="https://js.cx/carousel/10.png"></li>
+            </ul>
+        </div>
+        <button class="arrow next">11</button>
+    </div>
+    <script>
+        /* этот код помечает картинки, для удобства разработки */
+        var lis = document.getElementsByTagName('li');
+        for (var i = 0; i < lis.length; i++) {
+            lis[i].style.position = 'relative';
+            var span = document.createElement('span');
+            // обычно лучше использовать CSS-классы,
+            // но этот код - для удобства разработки, так что не будем трогать стили
+            span.style.cssText = 'position:absolute;left:0;top:0';
+            span.innerHTML = i + 1;
+            lis[i].appendChild(span);
+        }
+
+        /* конфигурация */
+        var width = 130; // ширина изображения
+        var count = 3; // количество изображений
+
+        var carousel = document.getElementById('carousel');
+        var list = carousel.querySelector('ul');
+        var listElems = carousel.querySelectorAll('li');
+
+        var position = 0; // текущий сдвиг влево
+
+        carousel.querySelector('.prev').onclick = function () {
+            // сдвиг влево
+            // последнее передвижение влево может быть не на 3, а на 2 или 1 элемент
+            position = Math.min(position + width * count, 0)
+            list.style.marginLeft = position + 'px';
+        };
+
+        carousel.querySelector('.next').onclick = function () {
+            // сдвиг вправо
+            // последнее передвижение вправо может быть не на 3, а на 2 или 1 элемент
+            position = Math.max(position - width * count, -width * (listElems.length - count));
+            list.style.marginLeft = position + 'px';
+        };
+    </script>*@

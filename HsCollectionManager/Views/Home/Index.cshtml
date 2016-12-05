@@ -1,0 +1,15 @@
+﻿@model HsCollectionManager.Models.UserModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+@using (Html.BeginForm())
+{
+   @Html.TextBoxFor(x => x.Name)
+   <input type="submit" value="Log In"/>
+}
+
+<h2>Haven't registered yet?</h2>
+@Html.ActionLink("Sign Up", "SignUp", null, new {@class = "btn btn-success"})
