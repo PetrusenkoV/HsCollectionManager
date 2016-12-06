@@ -12,7 +12,7 @@ namespace HsCollectionManager.Abstract
         List<Card> GetAllCards();
         int GetUserId(string userName);
         //change to void
-        int InsertUser(string userName);
+        bool InsertUser(string userName);
 
         int GetCardId(string cardImg);
 
@@ -21,5 +21,6 @@ namespace HsCollectionManager.Abstract
         void RemoveUserCard(int userId, int cardId);
 
         List<Card> GetUserCards(int userId);
+        List<Card> GetUserCardsManaCost(int userId, int manacost);
     }
 }

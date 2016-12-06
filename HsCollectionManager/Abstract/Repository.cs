@@ -60,7 +60,7 @@ namespace HsCollectionManager.Abstract
             return result;
         }
 
-        public int InsertUser(string userName)
+        public bool InsertUser(string userName)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -68,9 +68,16 @@ namespace HsCollectionManager.Abstract
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@name", userName);
-                    int rowsAffected = command.ExecuteNonQuery();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
 
-                    return rowsAffected;
                 }
             }
         }
@@ -138,6 +145,37 @@ namespace HsCollectionManager.Abstract
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@userid", userId);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        result.Add(new Card
+                        {
+                            Name = (string)reader["name"],
+                            ManaCost = (int)reader["manacost"],
+                            Category = (string)reader["category"],
+                            Rarity = (string)reader["rarity"],
+                            Img = (string)reader["img"]
+                        });
+                    }
+                }
+            }
+            return result;
+
+        }
+
+        public List<Card> GetUserCardsManaCost(int userId, int manacost)
+        {
+            List<Card> result = new List<Card>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand("Select name, category, rarity, img, manacost From cards c Inner Join UserCards u on c.id = u.CardId Where u.UserId = @userId and manacost = @manacost", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@userid", userId);
+                    command.Parameters.AddWithValue("@manacost", manacost);
 
                     SqlDataReader reader = command.ExecuteReader();
 
