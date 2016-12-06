@@ -36,89 +36,65 @@ namespace HsCollectionManager.Controllers
             return ShowUserCards(userModel);
         }
         
-        public ViewResult ShowAllCards(UserModel userModel, int page = 1)
+
+        public SelectCards BuildSelectCardsModel(IEnumerable<Card> cards, UserModel userModel, int page)
         {
-            SelectCards cards = new SelectCards
+            SelectCards resultCards = new SelectCards
             {
-                Cards = _repository.GetAllCards()
+                Cards = cards
                         .OrderBy(x => x.ManaCost)
                         .ThenBy(x => x.Name)
                         .Skip((page - 1) * _pageSize)
                         .Take(_pageSize),
+
                 PageInfo = new PageInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = _pageSize,
-                    TotalItems = _repository.GetAllCards().Count()
+                    TotalItems = cards.Count()
                 },
+
                 UserName = userModel.UserName,
                 UserId = userModel.UserId
             };
+
+            return resultCards;
+        }
+        public ViewResult ShowAllCards(UserModel userModel, int page = 1)
+        {
+            IEnumerable<Card> allCards = _repository.GetAllCards();
+
+            var cards = BuildSelectCardsModel(allCards, userModel, page);
 
             return View("AllCards", cards);
         }
         public ViewResult ShowUserCards(UserModel userModel, int page = 1)
         {
-            SelectCards cards = new SelectCards
-            {
-                Cards = _repository.GetUserCards(userModel.UserId)
-                    .OrderBy(x => x.ManaCost)
-                    .ThenBy(x => x.Name)
-                    .Skip((page - 1) * _pageSize)
-                        .Take(_pageSize),
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = _pageSize,
-                    TotalItems = _repository.GetUserCards(userModel.UserId).Count()
-                },
-                UserName = userModel.UserName,
-                UserId = userModel.UserId
-            };
+            IEnumerable<Card> userCards = _repository.GetUserCards(userModel.UserId);
+
+            var cards = BuildSelectCardsModel(userCards, userModel, page);
 
             return View("ShowUserCards", cards);
         }
 
         public ViewResult ShowUserCardsManaCost(UserModel userModel, int manacost, int page = 1)
         {
-            SelectCards cards = new SelectCards
-            {
-                Cards = _repository.GetUserCardsManaCost(userModel.UserId, manacost)
-                    .OrderBy(x => x.ManaCost)
-                    .ThenBy(x => x.Name)
-                    .Skip((page - 1) * _pageSize)
-                        .Take(_pageSize),
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = _pageSize,
-                    TotalItems = _repository.GetUserCards(userModel.UserId).Count()
-                },
-                UserId = userModel.UserId,
-                UserName = userModel.UserName
-            };
+            IEnumerable<Card> cardsManaCost =
+                _repository.GetUserCards(userModel.UserId)
+                                    .Where(x => x.ManaCost == manacost);
+
+            var cards = BuildSelectCardsModel(cardsManaCost, userModel, page);
 
             return View("ShowUserCards", cards);
         }
 
         public ViewResult ShowUserCardsMoreThenSevenManaCost(UserModel userModel, int page = 1)
         {
-            SelectCards cards = new SelectCards
-            {
-                Cards = _repository.GetUserCardsMoreThenSevenManaCost(userModel.UserId)
-                    .OrderBy(x => x.ManaCost)
-                    .ThenBy(x => x.Name)
-                    .Skip((page - 1) * _pageSize)
-                        .Take(_pageSize),
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = _pageSize,
-                    TotalItems = _repository.GetUserCards(userModel.UserId).Count()
-                },
-                UserId = userModel.UserId,
-                UserName = userModel.UserName
-            };
+            IEnumerable<Card> cardsMoreThenSevenManaCost =
+                _repository.GetUserCards(userModel.UserId)
+                                    .Where(x => x.ManaCost >= 7);
+
+            var cards = BuildSelectCardsModel(cardsMoreThenSevenManaCost, userModel, page);
 
             return View("ShowUserCards", cards);
         }

@@ -32,14 +32,7 @@
     @Html.ActionLink("Next", "ShowAllCards", "Home", new { UserName = Model.UserName, UserId = Model.UserId, page = @Model.PageInfo.CurrentPage + 1 },
     new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == Model.PageInfo.TotalPages ? "btn btn-success hidden" : "btn btn-success" })
 
-    @Html.ActionLink("0", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 0 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("1", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 1 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("2", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 2 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("3", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 3 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("4", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 4 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("5", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 5 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("6", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 6 }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("7+", "ShowUserCardsMoreThenSevenManaCost", "Home", new { userId = Model.UserId }, new { @class = "btn btn-warning" })
+    
 
     @Html.ActionLink("Finish", "Index", null, new { @class = "btn btn-success" })
 </div>
@@ -106,64 +99,3 @@
 
 
 
-
-
-
-@*
-        this is the template for future to improve design
-
-        <div id="carousel" class="carousel">
-        <button class="arrow prev">⇦</button>
-        <div class="gallery">
-            <ul class="images">
-                <li><img src="https://js.cx/carousel/1.png"></li>
-                <li><img src="https://js.cx/carousel/2.png"></li>
-                <li><img src="https://js.cx/carousel/3.png"></li>
-                <li><img src="https://js.cx/carousel/4.png"></li>
-                <li><img src="https://js.cx/carousel/5.png"></li>
-                <li><img src="https://js.cx/carousel/6.png"></li>
-                <li><img src="https://js.cx/carousel/7.png"></li>
-                <li><img src="https://js.cx/carousel/8.png"></li>
-                <li><img src="https://js.cx/carousel/9.png"></li>
-                <li><img src="https://js.cx/carousel/10.png"></li>
-            </ul>
-        </div>
-        <button class="arrow next">11</button>
-    </div>
-    <script>
-        /* этот код помечает картинки, для удобства разработки */
-        var lis = document.getElementsByTagUserName('li');
-        for (var i = 0; i < lis.length; i++) {
-            lis[i].style.position = 'relative';
-            var span = document.createElement('span');
-            // обычно лучше использовать CSS-классы,
-            // но этот код - для удобства разработки, так что не будем трогать стили
-           span.style.cssText = 'position:absolute;left:0;top:0';
-            span.innerHTML = i + 1;
-            lis[i].appendChild(span);
-        }
-
-        /* конфигурация */
-        var width = 130; // ширина изображения
-        var count = 3; // количество изображений
-
-        var carousel = document.getElementByUserId('carousel');
-        var list = carousel.querySelector('ul');
-        var listElems = carousel.querySelectorAll('li');
-
-        var position = 0; // текущий сдвиг влево
-
-        carousel.querySelector('.prev').onclick = function () {
-            // сдвиг влево
-            // последнее передвижение влево может быть не на 3, а на 2 или 1 элемент
-            position = Math.min(position + width * count, 0)
-            list.style.marginLeft = position + 'px';
-        };
-
-        carousel.querySelector('.next').onclick = function () {
-            // сдвиг вправо
-            // последнее передвижение вправо может быть не на 3, а на 2 или 1 элемент
-            position = Math.max(position - width * count, -width * (listElems.length - count));
-            list.style.marginLeft = position + 'px';
-        };
-    </script>*@
