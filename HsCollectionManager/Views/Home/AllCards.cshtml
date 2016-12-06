@@ -26,12 +26,21 @@
 }
 <div style="clear: left; margin: 20px">
     
-    @Html.ActionLink("Prev", "ShowAllCards", "Home", new { name = Model.UserName, page = @Model.PageInfo.CurrentPage - 1 },
+    @Html.ActionLink("Prev", "ShowAllCards", "Home", new { UserName = Model.UserName, UserId = Model.UserId, page = @Model.PageInfo.CurrentPage - 1 },
     new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == 1 ? "btn btn-success hidden" : "btn btn-success" })
 
-    @Html.ActionLink("Next", "ShowAllCards", "Home", new { name = Model.UserName, page = @Model.PageInfo.CurrentPage + 1 },
+    @Html.ActionLink("Next", "ShowAllCards", "Home", new { UserName = Model.UserName, UserId = Model.UserId, page = @Model.PageInfo.CurrentPage + 1 },
     new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == Model.PageInfo.TotalPages ? "btn btn-success hidden" : "btn btn-success" })
-    
+
+    @Html.ActionLink("0", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 0 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("1", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 1 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("2", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 2 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("3", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 3 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("4", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 4 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("5", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 5 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("6", "ShowUserCardsManaCost", "Home", new { userId = Model.UserId, manacost = 6 }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("7+", "ShowUserCardsMoreThenSevenManaCost", "Home", new { userId = Model.UserId }, new { @class = "btn btn-warning" })
+
     @Html.ActionLink("Finish", "Index", null, new { @class = "btn btn-success" })
 </div>
 <script>
@@ -43,7 +52,7 @@
             url: "/Home/InsertUserCard",
             content: "application/json; charset=utf-8",
             dataType: "json",
-            data: { CardImg: img[0].src, UserName: "@Model.UserName" },
+            data: { CardImg: img[0].src, UserId: "@Model.UserId" },
             success: function () {
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -65,7 +74,7 @@
             url: "/Home/RemoveFromCollection",
             content: "application/json; charset=utf-8",
             dataType: "json",
-            data: { CardImg: img[0].src, UserName: "@Model.UserName" },
+            data: { CardImg: img[0].src, UserId: "@Model.UserId" },
             success: function () {
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -123,7 +132,7 @@
     </div>
     <script>
         /* этот код помечает картинки, для удобства разработки */
-        var lis = document.getElementsByTagName('li');
+        var lis = document.getElementsByTagUserName('li');
         for (var i = 0; i < lis.length; i++) {
             lis[i].style.position = 'relative';
             var span = document.createElement('span');
@@ -138,7 +147,7 @@
         var width = 130; // ширина изображения
         var count = 3; // количество изображений
 
-        var carousel = document.getElementById('carousel');
+        var carousel = document.getElementByUserId('carousel');
         var list = carousel.querySelector('ul');
         var listElems = carousel.querySelectorAll('li');
 

@@ -193,7 +193,35 @@ namespace HsCollectionManager.Abstract
                 }
             }
             return result;
+        }
 
+        public List<Card> GetUserCardsMoreThenSevenManaCost(int userId)
+        {
+            List<Card> result = new List<Card>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand("Select name, category, rarity, img, manacost From cards c Inner Join UserCards u on c.id = u.CardId Where u.UserId = @userId and manacost >= 7", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@userid", userId);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        result.Add(new Card
+                        {
+                            Name = (string)reader["name"],
+                            ManaCost = (int)reader["manacost"],
+                            Category = (string)reader["category"],
+                            Rarity = (string)reader["rarity"],
+                            Img = (string)reader["img"]
+                        });
+                    }
+                }
+            }
+            return result;
         }
     }
 }

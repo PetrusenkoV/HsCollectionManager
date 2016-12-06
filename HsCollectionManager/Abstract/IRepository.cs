@@ -22,5 +22,6 @@ namespace HsCollectionManager.Abstract
 
         List<Card> GetUserCards(int userId);
         List<Card> GetUserCardsManaCost(int userId, int manacost);
+        List<Card> GetUserCardsMoreThenSevenManaCost(int userId);
     }
 }

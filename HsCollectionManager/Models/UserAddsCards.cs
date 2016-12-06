@@ -7,7 +7,7 @@ namespace HsCollectionManager.Models
 {
     public class UserAddsCards
     {
-        public string UserName { get; set; }
+        public int UserId { get; set; }
         public string CardImg { get; set; }
     }
 }

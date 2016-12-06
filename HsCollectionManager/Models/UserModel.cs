@@ -8,7 +8,7 @@ namespace HsCollectionManager.Models
     public class UserModel
     {
         //How to properly Incapsulate this?
-        public string Name { get; set; }
-        public int Id { get; set; }
+        public string UserName { get; set; }
+        public int UserId { get; set; }
     }
 }
