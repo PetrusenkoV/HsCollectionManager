@@ -10,11 +10,14 @@ namespace HsCollectionManager.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IUserRepository _userRepository;
+        private readonly ICardRepository _cardRepository;
         private readonly int _pageSize = 8;
-        public HomeController(IRepository repository)
+
+        public HomeController(IUserRepository userRepository, ICardRepository cardRepository)
         {
-            _repository = repository;
+            _userRepository = userRepository;
+            _cardRepository = cardRepository;
         }
         [HttpGet]
         public ViewResult Index()
@@ -25,76 +28,113 @@ namespace HsCollectionManager.Controllers
         [HttpPost]
         public ViewResult Index(UserModel userModel)
         {
-            int userId = _repository.GetUserId(userModel.UserName);
+            int userId = _userRepository.GetUserId(userModel.UserName);
             userModel.UserId = userId;
+            userModel.IsEditable = false;
 
             if (userId == -1)
             {
                 return View("NoUsersExistWithThisName", userModel);
             }
 
-            return ShowUserCards(userModel);
+            return ShowCards(userModel);
         }
         
 
-        public SelectCards BuildSelectCardsModel(IEnumerable<Card> cards, UserModel userModel, int page)
+        public SelectCards BuildSelectCardsModel(IEnumerable<Card> cards, UserModel userModel, int amountOfCards, int page)
         {
             SelectCards resultCards = new SelectCards
             {
                 Cards = cards
                         .OrderBy(x => x.ManaCost)
-                        .ThenBy(x => x.Name)
-                        .Skip((page - 1) * _pageSize)
-                        .Take(_pageSize),
-
+                        .ThenBy(x => x.Name),
+                        
                 PageInfo = new PageInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = _pageSize,
-                    TotalItems = cards.Count()
+                    TotalItems = amountOfCards
                 },
 
-                UserName = userModel.UserName,
-                UserId = userModel.UserId
+                UserModel = userModel
             };
 
             return resultCards;
         }
+
+        public ViewResult ShowCards(UserModel userModel, int page = 1)
+        {
+            if (userModel.IsEditable)
+            {
+                return ShowAllCards(userModel, page);
+            }
+            else
+            {
+                return ShowUserCards(userModel, page);
+            }
+        }
+
+        public ViewResult ShowCardsManaCost(UserModel userModel, int page = 1)
+        {
+            if (userModel.IsEditable)
+            {
+                return ShowAllCardsManaCost(userModel, page);
+            }
+            else
+            {
+                return ShowUserCardsManaCost(userModel, page);
+            }
+        }
         public ViewResult ShowAllCards(UserModel userModel, int page = 1)
         {
-            IEnumerable<Card> allCards = _repository.GetAllCards();
+            IEnumerable<Card> allCards = _cardRepository.GetAllCards(page, _pageSize);
+            int totalRows = _cardRepository.AmountOfCards();
 
-            var cards = BuildSelectCardsModel(allCards, userModel, page);
+            var cards = BuildSelectCardsModel(allCards, userModel, totalRows, page);
 
             return View("AllCards", cards);
         }
         public ViewResult ShowUserCards(UserModel userModel, int page = 1)
         {
-            IEnumerable<Card> userCards = _repository.GetUserCards(userModel.UserId);
+            IEnumerable<Card> userCards = _cardRepository.GetUserCards(userModel.UserId, page, _pageSize);
+            int totalRows = _cardRepository.AmountOfUserCards(userModel.UserId);
 
-            var cards = BuildSelectCardsModel(userCards, userModel, page);
+            var cards = BuildSelectCardsModel(userCards, userModel, totalRows, page);
 
-            return View("ShowUserCards", cards);
+            return View("AllCards", cards);
         }
 
-        public ViewResult ShowUserCardsManaCost(UserModel userModel, int manacost, int page = 1)
+        public ViewResult ShowAllCardsManaCost(UserModel userModel, int page = 1)
         {
             IEnumerable<Card> cardsManaCost =
-                _repository.GetUserCards(userModel.UserId)
-                                    .Where(x => x.ManaCost == manacost);
+                _cardRepository.GetAllCardsManaCost(userModel.Manacost, page, _pageSize);
 
-            var cards = BuildSelectCardsModel(cardsManaCost, userModel, page);
+            int totalRows = _cardRepository.AmountOfAllCardsManaCost(userModel.Manacost);
 
-            return View("ShowUserCards", cards);
+            var cards = BuildSelectCardsModel(cardsManaCost, userModel, totalRows, page);
+
+            return View("ManaCostCards", cards);
+        }
+        public ViewResult ShowUserCardsManaCost(UserModel userModel, int page = 1)
+        {
+            IEnumerable<Card> cardsManaCost =
+                _cardRepository.GetUserCardsManaCost(userModel.UserId, userModel.Manacost, page, _pageSize);
+                                  
+            int totalRows = _cardRepository.AmountOfUserCardsManaCost(userModel.UserId, userModel.Manacost);
+
+            var cards = BuildSelectCardsModel(cardsManaCost, userModel, totalRows, page);
+
+            return View("ManaCostCards", cards);
         }
 
         public ViewResult ShowUserCardsMoreThenSevenManaCost(UserModel userModel, int page = 1)
         {
             IEnumerable<Card> cardsMoreThenSevenManaCost =
-                _repository.GetUserCards(userModel.UserId)
-                                    .Where(x => x.ManaCost >= 7);
+                _cardRepository.GetUserCardsMoreThenSevenManaCost(userModel.UserId, page, _pageSize);
+                                    
+            int totalRows = _cardRepository.AmountOfUserCardsMoreThenSevenManaCost(userModel.UserId);
 
-            var cards = BuildSelectCardsModel(cardsMoreThenSevenManaCost, userModel, page);
+            var cards = BuildSelectCardsModel(cardsMoreThenSevenManaCost, userModel, totalRows, page);
 
             return View("ShowUserCards", cards);
         }
@@ -108,9 +148,9 @@ namespace HsCollectionManager.Controllers
         [HttpPost]
         public ViewResult SignUp(UserModel userModel)
         {
-            if (_repository.InsertUser(userModel.UserName))
+            if (_userRepository.InsertUser(userModel.UserName))
             {
-                userModel.UserId = _repository.GetUserId(userModel.UserName);
+                userModel.UserId = _userRepository.GetUserId(userModel.UserName);
                 return ShowAllCards(userModel);
             }
             else
@@ -119,22 +159,21 @@ namespace HsCollectionManager.Controllers
             }
         }
 
-
         [HttpPost]
         public void InsertUserCard(UserAddsCards model)
         {
-            int cardId = _repository.GetCardId(model.CardImg);
+            int cardId = _cardRepository.GetCardId(model.CardImg);
             int userId = model.UserId;
 
-            _repository.InsertUserCard(userId, cardId);
+            _cardRepository.InsertUserCard(userId, cardId);
         }
 
         public void RemoveFromCollection(UserAddsCards model)
         {
-            int cardId = _repository.GetCardId(model.CardImg);
+            int cardId = _cardRepository.GetCardId(model.CardImg);
             int userId = model.UserId;
 
-            _repository.RemoveUserCard(userId, cardId);
+            _cardRepository.RemoveUserCard(userId, cardId);
         }
     }
 }

@@ -30,7 +30,8 @@ namespace HsCollectionManager.Infrastructure
 
         private void AddBindings()
         {
-            kernel.Bind<IRepository>().To<Repository>();
+            kernel.Bind<IUserRepository>().To<UserRepository>();
+            kernel.Bind<ICardRepository>().To<CardRepository>();
         }
     }
 }

@@ -10,5 +10,8 @@ namespace HsCollectionManager.Models
         //How to properly Incapsulate this?
         public string UserName { get; set; }
         public int UserId { get; set; }
+        public bool IsEditable { get; set; } = true;
+        public int Manacost { get; set; }
+
     }
 }

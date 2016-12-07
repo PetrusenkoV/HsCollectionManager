@@ -10,7 +10,7 @@ namespace HsCollectionManager.Models
         public IEnumerable<Card> Cards { get; set; }
         public PageInfo PageInfo { get; set; }
         //Use UserModel instead of these 2 properties
-        public string UserName { get; set; }
-        public int UserId { get; set; }
+        public UserModel UserModel { get; set; }
+
     }
 }
