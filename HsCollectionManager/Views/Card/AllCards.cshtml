@@ -1,0 +1,122 @@
+﻿@using System.Web.Configuration
+@model HsCollectionManager.Models.SelectCards
+
+@{
+    ViewBag.Title = "AllCards";
+}
+<link href="~/Content/HideButtons.css" rel="stylesheet" />
+
+@if (@Model.UserModel.IsEditable)
+{
+    <h2 style = "text-align: center" > Chose cards for your collection</h2>
+}
+else
+{
+  <h2 style="text-align: center">@Model.UserModel.UserName</h2>
+}
+
+
+@foreach (var item in Model.Cards.Take(4))
+{
+    <div style="float: left; width: 280px;">
+        <h3 style="text-align: center">@item.Name</h3>
+        <img src="@item.Img" />
+        <button class="@(@Model.UserModel.IsEditable ? "1" : "hidden")">Add</button>
+        <button class="@(@Model.UserModel.IsEditable ? "2 visible" : "hidden")">Remove</button>
+    </div>
+}
+@foreach (var item in Model.Cards.Skip(4).Take(4))
+{
+    <div style="float: left; width: 280px;">
+        <h3 style="text-align: center">@item.Name</h3>
+        <img src="@item.Img" />
+        <button class="@(@Model.UserModel.IsEditable ? "1" : "hidden")">Add</button>
+        <button class="@(@Model.UserModel.IsEditable ? "2 visible" : "hidden")">Remove</button>
+    </div>
+}
+<div style="clear: left; margin: 20px">
+
+    @Html.ActionLink("Prev", "ShowCards", "Card", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable,
+        manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage - 1 }, 
+        new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == 1 ? "btn btn-success hidden" : "btn btn-success" })
+
+    @Html.ActionLink("All", "ShowCards", "Card", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, page = 1 }, new { @style = "clear: left", @class = "btn btn-info" })
+    @Html.ActionLink("0", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 0, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("1", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 1, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("2", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 2, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("3", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 3, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("4", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 4, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("5", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 5, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("6", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 6, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("7+", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 7, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+
+    @Html.ActionLink("Next", "ShowCards", "Card", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable, manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage + 1 },
+        new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == Model.PageInfo.TotalPages ? "btn btn-success hidden" : "btn btn-success" })
+
+
+
+    @Html.ActionLink("Finish", "ShowCards", "Card", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = false, page = 1 }, new { @class = Model.UserModel.IsEditable ? "btn btn-success" : "hidden" })
+</div>
+<script>
+    var addToCollection = function () {
+        var img = this.parentElement.getElementsByTagName('img');
+
+        $.ajax({
+            type: "POST",
+            url: "/Card/InsertUserCard",
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            data: { CardImg: img[0].src, UserId: "@Model.UserModel.UserId" },
+            success: function () {
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                // TODO: Show error
+            }
+        });
+
+        var btns = this.parentElement.getElementsByTagName('button');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle("visible");
+        }
+    }
+
+    var removeFromCollection = function () {
+        var img = this.parentElement.getElementsByTagName('img');
+
+        $.ajax({
+            type: "POST",
+            url: "/Card/RemoveFromCollection",
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            data: { CardImg: img[0].src, UserId: "@Model.UserModel.UserId" },
+            success: function () {
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                // TODO: Show error
+            }
+        });
+
+        var btns = this.parentElement.getElementsByTagName('button');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle("visible");
+        }
+    }
+
+    var btns1 = document.getElementsByClassName('1');
+    for (var i = 0; i < btns1.length; i++) {
+        btns1[i].addEventListener("click", addToCollection);
+    }
+
+    var btns2 = document.getElementsByClassName('2');
+    for (var i = 0; i < btns2.length; i++) {
+        btns2[i].addEventListener("click", removeFromCollection);
+    }
+</script>
+
+
+
+
+
+
+
+

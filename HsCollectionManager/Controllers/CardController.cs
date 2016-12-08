@@ -8,39 +8,16 @@ using HsCollectionManager.Models;
 
 namespace HsCollectionManager.Controllers
 {
-    public class HomeController : Controller
+    public class CardController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ICardRepository _cardRepository;
+         private readonly ICardRepository _cardRepository;
         private readonly int _pageSize = 8;
 
-        public HomeController(IUserRepository userRepository, ICardRepository cardRepository)
+        public CardController(IUserRepository userRepository, ICardRepository cardRepository)
         {
-            _userRepository = userRepository;
             _cardRepository = cardRepository;
         }
-        [HttpGet]
-        public ViewResult Index()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ViewResult Index(UserModel userModel)
-        {
-            int userId = _userRepository.GetUserId(userModel.UserName);
-            userModel.UserId = userId;
-            userModel.IsEditable = false;
-
-            if (userId == -1)
-            {
-                return View("NoUsersExistWithThisName", userModel);
-            }
-
-            return ShowCards(userModel);
-        }
-
-
+      
         public SelectCards BuildSelectCardsModel(IEnumerable<Card> cards, UserModel userModel, int amountOfCards, int page)
         {
             SelectCards resultCards = new SelectCards
@@ -73,18 +50,6 @@ namespace HsCollectionManager.Controllers
                 return ShowUserCards(userModel, page);
             }
         }
-
-        //public ViewResult ShowCardsManaCost(UserModel userModel, int page = 1)
-        //{
-        //    if (userModel.IsEditable)
-        //    {
-        //        return ShowAllCardsManaCost(userModel, page);
-        //    }
-        //    else
-        //    {
-        //        return ShowUserCardsManaCost(userModel, page);
-        //    }
-        //}
 
         //NAMING!!!
         public ViewResult ShowAllCards(UserModel userModel, int page = 1)
@@ -143,62 +108,7 @@ namespace HsCollectionManager.Controllers
 
             return View("AllCards", cards);
         }
-
-        //public ViewResult ShowAllCardsManaCost(UserModel userModel, int page = 1)
-        //{
-        //    IEnumerable<Card> cardsManaCost =
-        //        _cardRepository.GetAllCardsManaCost(userModel.Manacost, page, _pageSize);
-
-        //    int totalRows = _cardRepository.AmountOfAllCardsManaCost(userModel.Manacost);
-
-        //    var cards = BuildSelectCardsModel(cardsManaCost, userModel, totalRows, page);
-
-        //    return View("ManaCostCards", cards);
-        //}
-        //public ViewResult ShowUserCardsManaCost(UserModel userModel, int page = 1)
-        //{
-        //    IEnumerable<Card> cardsManaCost =
-        //        _cardRepository.GetUserCardsManaCost(userModel.UserId, userModel.Manacost, page, _pageSize);
-
-        //    int totalRows = _cardRepository.AmountOfUserCardsManaCost(userModel.UserId, userModel.Manacost);
-
-        //    var cards = BuildSelectCardsModel(cardsManaCost, userModel, totalRows, page);
-
-        //    return View("ManaCostCards", cards);
-        //}
-
-        //public ViewResult ShowUserCardsMoreThenSevenManaCost(UserModel userModel, int page = 1)
-        //{
-        //    IEnumerable<Card> cardsMoreThenSevenManaCost =
-        //        _cardRepository.GetUserCardsMoreThenSixManaCost(userModel.UserId, page, _pageSize);
-
-        //    int totalRows = _cardRepository.AmountOfUserCardsMoreThenSixManaCost(userModel.UserId);
-
-        //    var cards = BuildSelectCardsModel(cardsMoreThenSevenManaCost, userModel, totalRows, page);
-
-        //    return View("ShowUserCards", cards);
-        //}
-
-        [HttpGet]
-        public ViewResult SignUp()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ViewResult SignUp(UserModel userModel)
-        {
-            if (_userRepository.InsertUser(userModel.UserName))
-            {
-                userModel.UserId = _userRepository.GetUserId(userModel.UserName);
-                return ShowAllCards(userModel);
-            }
-            else
-            {
-                return View("ThisUserExists");
-            }
-        }
-
+        
         [HttpPost]
         public void InsertUserCard(UserAddsCards model)
         {
