@@ -26,25 +26,26 @@
 }
 <div style="clear: left; margin: 20px">
     
-    @Html.ActionLink("Prev", "ShowCards", "Home", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable, page = @Model.PageInfo.CurrentPage - 1 },
+    @Html.ActionLink("Prev", "ShowCards", "Home", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable,
+    manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage - 1 }, 
     new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == 1 ? "btn btn-success hidden" : "btn btn-success" })
     
     @Html.ActionLink("All", "ShowCards", "Home", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, page = 1 }, new { @style = "clear: left", @class = "btn btn-warning" })
-    @Html.ActionLink("0", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 0, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("1", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 1, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("2", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 2, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("3", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 3, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("4", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 4, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("5", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 5, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("6", "ShowCardsManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 6, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
-    @Html.ActionLink("7+", "ShowUserCardsMoreThenSevenManaCost", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("0", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 0, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("1", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 1, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("2", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 2, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("3", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 3, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("4", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 4, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("5", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 5, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("6", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 6, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("7+", "ShowCards", "Home", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, manacost = 7, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-warning" })
 
-    @Html.ActionLink("Next", "ShowCards", "Home", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable, page = @Model.PageInfo.CurrentPage + 1 },
+    @Html.ActionLink("Next", "ShowCards", "Home", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable, manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage + 1 },
     new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == Model.PageInfo.TotalPages ? "btn btn-success hidden" : "btn btn-success" })
 
     
 
-    @Html.ActionLink("Finish", "ShowCards", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = false, page = 1 }, new { @class = Model.UserModel.IsEditable ? "btn btn-success" : "hidden" })
+    @Html.ActionLink("Finish", "ShowCards", "Home", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = false, page = 1 }, new { @class = Model.UserModel.IsEditable ? "btn btn-success" : "hidden" })
 </div>
 <script>
     var addToCollection = function () {

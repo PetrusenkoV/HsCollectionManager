@@ -45,6 +45,34 @@ namespace HsCollectionManager.Abstract
             }
             return result;
         }
+        public List<Card> GetAllCards()
+        {
+            List<Card> result = new List<Card>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand("Select name, category, rarity, img, manacost " +
+                                                           "From cards ", connection))
+                {
+                    connection.Open();
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        result.Add(new Card
+                        {
+                            Name = (string)reader["name"],
+                            ManaCost = (int)reader["manacost"],
+                            Category = (string)reader["category"],
+                            Rarity = (string)reader["rarity"],
+                            Img = (string)reader["img"]
+                        });
+                    }
+                }
+            }
+            return result;
+        }
         public List<Card> GetUserCards(int userId, int page, int pageSize)
         {
             List<Card> result = new List<Card>();
@@ -114,6 +142,39 @@ namespace HsCollectionManager.Abstract
             }
             return result;
         }
+        public List<Card> GetAllCardsMoreThenSixManaCost(int page, int pageSize)
+        {
+            List<Card> result = new List<Card>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand("Select name, category, rarity, img, manacost " +
+                                                           "From cards " +
+                                                           "Where manacost >= 7" +
+                                                           "Order by manacost, name " +
+                                                           "Offset (@page - 1) * @pageSize Rows Fetch next @pageSize Rows only", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@page", page);
+                    command.Parameters.AddWithValue("@pageSize", pageSize);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        result.Add(new Card
+                        {
+                            Name = (string)reader["name"],
+                            ManaCost = (int)reader["manacost"],
+                            Category = (string)reader["category"],
+                            Rarity = (string)reader["rarity"],
+                            Img = (string)reader["img"]
+                        });
+                    }
+                }
+            }
+            return result;
+        }
         public List<Card> GetUserCardsManaCost(int userId, int manacost, int page, int pageSize)
         {
             List<Card> result = new List<Card>();
@@ -150,7 +211,7 @@ namespace HsCollectionManager.Abstract
             }
             return result;
         }
-        public List<Card> GetUserCardsMoreThenSevenManaCost(int userId, int page, int pageSize)
+        public List<Card> GetUserCardsMoreThenSixManaCost(int userId, int page, int pageSize)
         {
             List<Card> result = new List<Card>();
 
@@ -300,7 +361,10 @@ namespace HsCollectionManager.Abstract
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand("Select Count(img) From cards c Inner Join UserCards u on c.id = u.CardId Where u.UserId = @userId and manacost = @manacost", connection))
+                using (SqlCommand command = new SqlCommand("Select Count(img) " +
+                                                           "From cards c Inner Join UserCards u " +
+                                                           "on c.id = u.CardId " +
+                                                           "Where u.UserId = @userId and manacost = @manacost", connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@userid", userId);
@@ -311,13 +375,34 @@ namespace HsCollectionManager.Abstract
             }
             return result;
         }
-        public int AmountOfUserCardsMoreThenSevenManaCost(int userId)
+
+        public int AmountOfAllCardsMoreThenSixManaCost()
         {
             int result = 0;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand("Select Count(img) From cards c Inner Join UserCards u on c.id = u.CardId Where u.UserId = @userId and manacost >= 7", connection))
+                using (SqlCommand command = new SqlCommand("Select Count(img) " +
+                                                           "From cards " +
+                                                           "Where manacost >= 7", connection))
+                {
+                    connection.Open();
+
+                    result = (int)command.ExecuteScalar();
+                }
+            }
+            return result;
+        }
+        public int AmountOfUserCardsMoreThenSixManaCost(int userId)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand("Select Count(img) " +
+                                                           "From cards c Inner Join UserCards u " +
+                                                           "on c.id = u.CardId " +
+                                                           "Where u.UserId = @userId and manacost >= 7", connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@userid", userId);
