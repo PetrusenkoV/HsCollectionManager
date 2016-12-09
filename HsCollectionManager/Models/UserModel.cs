@@ -12,6 +12,7 @@ namespace HsCollectionManager.Models
         public int UserId { get; set; }
         public bool IsEditable { get; set; } = true;
         public int Manacost { get; set; } = -1;
+        public string Category { get; set; } = "All";
 
     }
 }
