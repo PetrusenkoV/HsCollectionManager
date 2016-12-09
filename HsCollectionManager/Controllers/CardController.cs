@@ -50,39 +50,23 @@ namespace HsCollectionManager.Controllers
                 return ShowUserCards(userModel, page);
             }
         }
-
-        //this method is too big
+        
         public ViewResult ShowAllCards(UserModel userModel, int page = 1)
         {
             int totalRows;
             IEnumerable<Card> allCards;
-
-            if (userModel.Manacost == -1)
+            
+            if (userModel.Category == "All")
             {
-                if (userModel.Category == "All")
-                {
-                    allCards = _cardRepository.GetAllCards(page, _pageSize);
-                    totalRows = _cardRepository.AmountOfAllCards();
-                }
-                else
-                {
-                    allCards = _cardRepository.GetAllCardsCategory(userModel.Category, page, _pageSize);
-                    totalRows = _cardRepository.AmountOfAllCardsCategory(userModel.Category);
-                }
+                allCards = _cardRepository.GetAllCardsManaCost(userModel.Manacost, page, _pageSize);
+                totalRows = _cardRepository.AmountOfAllCardsManaCost(userModel.Manacost);
             }
             else
             {
-                if (userModel.Category == "All")
-                {
-                    allCards = _cardRepository.GetAllCardsManaCost(userModel.Manacost, page, _pageSize);
-                    totalRows = _cardRepository.AmountOfAllCardsManaCost(userModel.Manacost);
-                }
-                else
-                {
-                    allCards = _cardRepository.GetAllCardsCategoryManacost(userModel.Category, userModel.Manacost, page, _pageSize);
-                    totalRows = _cardRepository.AmountOfAllCardsCategoryManacost(userModel.Category, userModel.Manacost);
-                }
+                allCards = _cardRepository.GetAllCardsCategoryManacost(userModel.Category, userModel.Manacost, page, _pageSize);
+                totalRows = _cardRepository.AmountOfAllCardsCategoryManacost(userModel.Category, userModel.Manacost);
             }
+            
             var cards = BuildSelectCardsModel(allCards, userModel, totalRows, page);
 
             return View("AllCards", cards);
@@ -92,34 +76,18 @@ namespace HsCollectionManager.Controllers
             int totalRows;
             IEnumerable<Card> userCards;
 
-            if (userModel.Manacost == -1)
+            if (userModel.Category == "All")
             {
-                if (userModel.Category == "All")
-                {
-                    userCards = _cardRepository.GetUserCards(userModel.UserId, page, _pageSize);
-                    totalRows = _cardRepository.AmountOfUserCards(userModel.UserId);
-                }
-                else
-                {
-                    userCards = _cardRepository.GetUserCardsCategory(userModel.UserId, userModel.Category, page, _pageSize);
-                    totalRows = _cardRepository.AmountOfUserCardsCategory(userModel.UserId, userModel.Category);
-                }
+                userCards = _cardRepository.GetUserCardsManaCost(userModel.UserId, userModel.Manacost, page,
+                    _pageSize);
+                totalRows = _cardRepository.AmountOfUserCardsManaCost(userModel.UserId, userModel.Manacost);
             }
             else
             {
-                if (userModel.Category == "All")
-                {
-                    userCards = _cardRepository.GetUserCardsManaCost(userModel.UserId, userModel.Manacost, page,
-                        _pageSize);
-                    totalRows = _cardRepository.AmountOfUserCardsManaCost(userModel.UserId, userModel.Manacost);
-                }
-                else
-                {
-                    userCards = _cardRepository.GetUserCardsCategoryManacost(userModel.UserId, userModel.Category,
-                        userModel.Manacost, page, _pageSize);
-                    totalRows = _cardRepository.AmountOfUserCardsCategoryManacost(userModel.UserId, userModel.Category,
-                        userModel.Manacost);
-                }
+                userCards = _cardRepository.GetUserCardsCategoryManacost(userModel.UserId, userModel.Category,
+                    userModel.Manacost, page, _pageSize);
+                totalRows = _cardRepository.AmountOfUserCardsCategoryManacost(userModel.UserId, userModel.Category,
+                    userModel.Manacost);
             }
 
             var cards = BuildSelectCardsModel(userCards, userModel, totalRows, page);
