@@ -49,6 +49,7 @@ namespace HsCollectionManager.Controllers
             if (_userRepository.InsertUser(userModel.UserName))
             {
                 userModel.UserId = _userRepository.GetUserId(userModel.UserName);
+                userModel.IsEditable = true;
                 return RedirectToAction("ShowCards", "Card", userModel);
             }
             else

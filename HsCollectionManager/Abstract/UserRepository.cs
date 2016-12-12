@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -10,7 +11,7 @@ namespace HsCollectionManager.Abstract
     public class UserRepository : IUserRepository
     {
         string connectionString =
-                "Data Source=VPETRUSENKO\\SQLEXPRESS;Initial Catalog=HsDb;Integrated Security=True";
+                ConfigurationManager.ConnectionStrings["myConnectionString"].ConnectionString;
 
         public int GetUserId(string userName)
         {
