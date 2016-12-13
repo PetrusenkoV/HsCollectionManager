@@ -30,20 +30,20 @@ else
 
 @foreach (var item in Model.Cards.Take(4))
 {
-    <div style="float: left; width: 280px;">
+    <div style="float: left; width: 280px;" id="@item.Id">
         <h3 style="text-align: center">@item.Name</h3>
         <img src="@item.Img" />
-        <button class="@(@Model.UserModel.IsEditable ? "1" : "hidden")">Add</button>
-        <button class="@(@Model.UserModel.IsEditable ? "2 visible" : "hidden")">Remove</button>
+        <button class="@(@Model.UserModel.IsEditable ? "1" : "hidden")" onclick="addToCollection(@item.Id)">Add</button>
+        <button class="@(@Model.UserModel.IsEditable ? "2 visible" : "hidden")" onclick="removeFromCollection(@item.Id)">Remove</button>
     </div>
 }
 @foreach (var item in Model.Cards.Skip(4).Take(4))
 {
-    <div style="float: left; width: 280px;">
+    <div style="float: left; width: 280px;" id="@item.Id">
         <h3 style="text-align: center">@item.Name</h3>
         <img src="@item.Img" />
-        <button class="@(@Model.UserModel.IsEditable ? "1" : "hidden")">Add</button>
-        <button class="@(@Model.UserModel.IsEditable ? "2 visible" : "hidden")">Remove</button>
+        <button class="@(@Model.UserModel.IsEditable ? "1" : "hidden")" onclick="addToCollection(@item.Id)">Add</button>
+        <button class="@(@Model.UserModel.IsEditable ? "2 visible" : "hidden")" onclick="removeFromCollection(@item.Id)">Remove</button>
     </div>
 }
 <div style="clear: left; margin: 20px">
@@ -70,58 +70,44 @@ else
     @Html.ActionLink("Finish", "ShowCards", "Card", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = false, page = 1 }, new { @class = Model.UserModel.IsEditable ? "btn btn-success" : "hidden" })
 </div>
 <script>
-    var addToCollection = function () {
-        var img = this.parentElement.getElementsByTagName('img');
-
+    function insertCardIntoDb(cardId) {
         $.ajax({
             type: "POST",
             url: "/Card/InsertUserCard",
             content: "application/json; charset=utf-8",
             dataType: "json",
-            data: { CardImg: img[0].src, UserId: "@Model.UserModel.UserId" },
-            success: function () {
-            },
+            data: { cardId: cardId, userId: "@Model.UserModel.UserId" },
+            success: toggleButtonsVisibility(cardId),
             error: function (xhr, textStatus, errorThrown) {
                 // TODO: Show error
             }
         });
-
-        var btns = this.parentElement.getElementsByTagName('button');
-        for (var i = 0; i < btns.length; i++) {
-            btns[i].classList.toggle("visible");
-        }
     }
 
-    var removeFromCollection = function () {
-        var img = this.parentElement.getElementsByTagName('img');
-
+    function removeCardFromDb(cardId) {
         $.ajax({
             type: "POST",
             url: "/Card/RemoveFromCollection",
             content: "application/json; charset=utf-8",
             dataType: "json",
-            data: { CardImg: img[0].src, UserId: "@Model.UserModel.UserId" },
-            success: function () {
-            },
+            data: { cardId: cardId, UserId: "@Model.UserModel.UserId" },
+            success: toggleButtonsVisibility(cardId),
             error: function (xhr, textStatus, errorThrown) {
                 // TODO: Show error
             }
         });
-
-        var btns = this.parentElement.getElementsByTagName('button');
-        for (var i = 0; i < btns.length; i++) {
-            btns[i].classList.toggle("visible");
-        }
     }
 
-    var btns1 = document.getElementsByClassName('1');
-    for (var i = 0; i < btns1.length; i++) {
-        btns1[i].addEventListener("click", addToCollection);
+    function toggleButtonsVisibility(cardId) {
+        $("div#" + cardId).find("button").toggleClass("visible");
     }
 
-    var btns2 = document.getElementsByClassName('2');
-    for (var i = 0; i < btns2.length; i++) {
-        btns2[i].addEventListener("click", removeFromCollection);
+    function addToCollection(cardId) {
+        insertCardIntoDb(cardId);
+    }
+
+    function removeFromCollection(cardId) {
+        removeCardFromDb(cardId);
     }
 </script>
 

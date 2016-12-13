@@ -12,5 +12,6 @@ namespace HsCollectionManager.Models
         public string Category { get; set; }
         public string Rarity { get; set; }
         public string Img { get; set; }
+        public int Id { get; set; }
     }
 }

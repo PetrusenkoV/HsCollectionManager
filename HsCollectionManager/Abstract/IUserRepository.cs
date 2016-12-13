@@ -9,8 +9,8 @@ namespace HsCollectionManager.Abstract
 {
     public interface IUserRepository
     {
-        int GetUserId(string userName);
-        bool InsertUser(string userName);
+        UserIdModel GetUserId(string userName);
+        void InsertUser(string userName);
 
      
     }

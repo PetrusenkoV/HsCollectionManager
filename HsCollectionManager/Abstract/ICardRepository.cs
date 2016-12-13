@@ -9,16 +9,9 @@ namespace HsCollectionManager.Abstract
 {
     public interface ICardRepository
     {
-        //List<Card> GetAllCardsManaCost(int manacost, int page, int pageSize);
-        //List<Card> GetUserCardsManaCost(int userId, int manacost, int page, int pageSize);
-        //List<Card> GetAllCardsCategoryManacost(string category, int manacost, int page, int pageSize);
-        List<Card> GetUserCardsCategoryManacost(int userId, string category, int manacost, bool isEditible, int page, int pageSize);
-        //int AmountOfAllCardsManaCost(int manacost);
-        //int AmountOfUserCardsManaCost(int userId, int manacost);
-        //int AmountOfAllCardsCategoryManacost(string category, int manacost);
-        int AmountOfUserCardsCategoryManacost(int userId, string category, bool isEditible, int manacost);
+        List<Card> GetUserCardsCategoryManacost(int userId, string category, int manacost, bool isEditable, int page, int pageSize);
+        int AmountOfUserCardsCategoryManacost(int userId, string category, bool isEditable, int manacost);
         void InsertUserCard(int userId, int cardId);
         void RemoveUserCard(int userId, int cardId);
-        int GetCardId(string cardImg);
     }
 }

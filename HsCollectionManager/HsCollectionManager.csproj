@@ -165,7 +165,7 @@
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\PageInfo.cs" />
     <Compile Include="Models\SelectCards.cs" />
-    <Compile Include="Models\UserAddsCards.cs" />
+    <Compile Include="Models\UserIdModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

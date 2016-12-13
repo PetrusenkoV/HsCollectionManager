@@ -25,17 +25,16 @@ namespace HsCollectionManager.Controllers
         [HttpPost]
         public ActionResult Index(UserModel userModel)
         {
-            int userId = _userRepository.GetUserId(userModel.UserName);
-            userModel.UserId = userId;
-            userModel.IsEditable = false;
+            UserIdModel userIdModel = _userRepository.GetUserId(userModel.UserName);
 
-            if (userId == -1)
+            if (userIdModel.IsNull)
             {
                 return View("NoUsersExistWithThisName", userModel);
             }
 
+            userModel.UserId = userIdModel.UserId;
+
             return RedirectToAction("ShowCards", "Card", userModel);
-            
         }
 
         [HttpGet]
@@ -46,13 +45,18 @@ namespace HsCollectionManager.Controllers
         [HttpPost]
         public ActionResult SignUp(UserModel userModel)
         {
-            if (_userRepository.InsertUser(userModel.UserName))
+            try
             {
-                userModel.UserId = _userRepository.GetUserId(userModel.UserName);
+                _userRepository.InsertUser(userModel.UserName);
+                UserIdModel userIdModel = _userRepository.GetUserId(userModel.UserName);
+
+                userModel.UserId = userIdModel.UserId;
+
                 userModel.IsEditable = true;
+
                 return RedirectToAction("ShowCards", "Card", userModel);
             }
-            else
+            catch
             {
                 return View("ThisUserExists");
             }
