@@ -164,6 +164,7 @@
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\PageInfo.cs" />
+    <Compile Include="Models\QueryBuilderHelper.cs" />
     <Compile Include="Models\SelectCards.cs" />
     <Compile Include="Models\UserIdModel.cs" />
     <Compile Include="Models\UserModel.cs" />

@@ -94,6 +94,43 @@ namespace HsCollectionManager.Abstract
             }
         }
 
+        
+        
+        private string QueryBuilderCards(int userId, string className, int manacost, bool isEditable, int page, int pageSize)
+        {
+            StringBuilder mainQuery =
+                new StringBuilder("Select c.id, c.name, c.rarity_id, c.img, c.manacost from cards c ");
+            
+            var queryBuilderHelper = new QueryBuilderHelper();
+
+            queryBuilderHelper.UserFilter(userId, isEditable);
+            queryBuilderHelper.ClassFilter(className);
+            queryBuilderHelper.ManacostFilter(manacost);
+
+            AppendJoinsListToQueryString(mainQuery, queryBuilderHelper.JoinsList);
+            AppendWhereListToQueryString(mainQuery, queryBuilderHelper.WhereList);
+
+            mainQuery.Append("Order By manacost, c.name " +
+                             $"Offset {(page - 1) * pageSize} Rows Fetch next {pageSize} Rows only ");
+
+            return mainQuery.ToString();
+        }
+
+        private string QueryBuilderAmount(int userId, string className, int manacost, bool isEditable)
+        {
+            StringBuilder mainQuery = new StringBuilder("Select Count(img) from cards c ");
+
+            var queryBuilderHelper = new QueryBuilderHelper();
+
+            queryBuilderHelper.UserFilter(userId, isEditable);
+            queryBuilderHelper.ClassFilter(className);
+            queryBuilderHelper.ManacostFilter(manacost);
+
+            AppendJoinsListToQueryString(mainQuery, queryBuilderHelper.JoinsList);
+            AppendWhereListToQueryString(mainQuery, queryBuilderHelper.WhereList);
+
+            return mainQuery.ToString();
+        }
         private List<string> CreateJoinsList(string className, bool isEditable)
         {
             var result = new List<string>();
@@ -138,6 +175,14 @@ namespace HsCollectionManager.Abstract
             return result;
         }
 
+        private void AppendJoinsListToQueryString(StringBuilder str, List<string> list)
+        {
+            foreach (var item in list)
+            {
+                str.Append(item);
+            }
+        }
+
         private void AppendWhereListToQueryString(StringBuilder str, List<string> list)
         {
             var amountOfElementsInList = list.Count;
@@ -157,108 +202,65 @@ namespace HsCollectionManager.Abstract
             str.Append(list[amountOfElementsInList - 1]);
         }
 
-        private void AppendJoinsListToQueryString(StringBuilder str, List<string> list)
-        {
-            foreach (var item in list)
-            {
-                str.Append(item);
-            }
-        }
+        //private StringBuilder AddUserJoinFilter(StringBuilder str, bool isEditable)
+        //{
+        //    str.Append(isEditable ? "" : "Inner join UserCards u on c.id = u.cardId ");
 
-        //make array of joins and where
-        //then add them to query framework
-        private string QueryBuilderCards(int userId, string className, int manacost, bool isEditable, int page, int pageSize)
-        {
-            StringBuilder mainQuery =
-                new StringBuilder("Select c.id, c.name, c.rarity_id, c.img, c.manacost from cards c ");
+        //    return str;
+        //}
+        //private StringBuilder AddUserClassFilter(StringBuilder str, string className, int userId, bool isEditable)
+        //{
 
-            var joins = CreateJoinsList(className, isEditable);
-            var where = CreateWhereList(className, userId, manacost, isEditable);
-            AppendJoinsListToQueryString(mainQuery, joins);
-            AppendWhereListToQueryString(mainQuery, where);
+        //    string classString = isEditable ? "" : $"u.userId = {userId} ";
 
-            mainQuery.Append("Order By manacost, c.name " +
-                             $"Offset {(page - 1) * pageSize} Rows Fetch next {pageSize} Rows only ");
+        //    if (className != "All")
+        //    {
+        //        str.Append("inner join Class cl on cl.id = c.class_id ");
 
-            return mainQuery.ToString();
-        }
+        //        classString += classString == "" ? "" : "and ";
+        //        classString += "cl.name = '" + className + "' ";
+        //    }
+        //    else
+        //    {
+        //        classString += "";
+        //    }
 
-        private string QueryBuilderAmount(int userId, string className, int manacost, bool isEditable)
-        {
-            StringBuilder mainQuery = new StringBuilder("Select Count(img) from cards c ");
+        //    return AppendToStringBuilderConditionaly(str, classString);
+        //}
 
-            //mainQuery = AddUserJoinFilter(mainQuery, isEditable);
+        //private StringBuilder AddManaCostFilter(StringBuilder str, int manacost)
+        //{
+        //    string manacostString;
 
-            //mainQuery = AddUserClassFilter(mainQuery, className, userId, isEditable);
+        //    if (manacost == -1)
+        //    {
+        //        manacostString = "";
+        //    }
+        //    else if (manacost < 7)
+        //    {
+        //        manacostString = "manacost = " + manacost + " ";
+        //    }
+        //    else
+        //    {
+        //        manacostString = "manacost >= 7";
+        //    }
 
-            //mainQuery = AddManaCostFilter(mainQuery, manacost);
-            var joins = CreateJoinsList(className, isEditable);
-            var where = CreateWhereList(className, userId, manacost, isEditable);
-            AppendJoinsListToQueryString(mainQuery, joins);
-            AppendWhereListToQueryString(mainQuery, where);
+        //    return AppendToStringBuilderConditionaly(str, manacostString);
+        //}
 
-            return mainQuery.ToString();
-        }
+        //private StringBuilder AppendToStringBuilderConditionaly(StringBuilder str, string appendString)
+        //{
+        //    string appStr;
+        //    if (str.ToString().Contains("Where"))
+        //    {
+        //        appStr = appendString == "" ? "" : "and " + appendString + " ";
+        //    }
+        //    else
+        //    {
+        //        appStr = appendString == "" ? "" : "Where " + appendString + " ";
+        //    }
 
-        private StringBuilder AddUserJoinFilter(StringBuilder str, bool isEditable)
-        {
-            str.Append(isEditable ? "" : "Inner join UserCards u on c.id = u.cardId ");
-
-            return str;
-        }
-        private StringBuilder AddUserClassFilter(StringBuilder str, string className, int userId, bool isEditable)
-        {
-
-            string classString = isEditable ? "" : $"u.userId = {userId} ";
-
-            if (className != "All")
-            {
-                str.Append("inner join Class cl on cl.id = c.class_id ");
-
-                classString += classString == "" ? "" : "and ";
-                classString += "cl.name = '" + className + "' ";
-            }
-            else
-            {
-                classString += "";
-            }
-
-            return AppendToStringBuilderConditionaly(str, classString);
-        }
-
-        private StringBuilder AddManaCostFilter(StringBuilder str, int manacost)
-        {
-            string manacostString;
-
-            if (manacost == -1)
-            {
-                manacostString = "";
-            }
-            else if (manacost < 7)
-            {
-                manacostString = "manacost = " + manacost + " ";
-            }
-            else
-            {
-                manacostString = "manacost >= 7";
-            }
-
-            return AppendToStringBuilderConditionaly(str, manacostString);
-        }
-
-        private StringBuilder AppendToStringBuilderConditionaly(StringBuilder str, string appendString)
-        {
-            string appStr;
-            if (str.ToString().Contains("Where"))
-            {
-                appStr = appendString == "" ? "" : "and " + appendString + " ";
-            }
-            else
-            {
-                appStr = appendString == "" ? "" : "Where " + appendString + " ";
-            }
-
-            return str.Append(appStr);
-        }
+        //    return str.Append(appStr);
+        //}
     }
 }

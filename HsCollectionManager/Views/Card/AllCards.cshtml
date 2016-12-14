@@ -14,7 +14,7 @@ else
 {
   <h2 style="text-align: center">@Model.UserModel.UserName</h2>
 }
-<div>
+<div style="margin: 20px;">
     @Html.ActionLink("All", "ShowCards", "Card", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, category = "All", page = 1 }, new { @class = "btn btn-danger" })
     @Html.ActionLink("Druid", "ShowCards", "Card", new {userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, category = "Druid", page = 1}, new {@class = "btn btn-info"})
     @Html.ActionLink("Hunter", "ShowCards", "Card", new {userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, category = "Hunter", page = 1}, new {@class = "btn btn-info"})
@@ -28,6 +28,19 @@ else
     @Html.ActionLink("Neutral", "ShowCards", "Card", new {userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, category = "Neutral", page = 1}, new {@class = "btn btn-info"})
 </div>
 
+<div style="margin: 20px;">
+    @Html.ActionLink("All", "ShowCards", "Card", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, category = Model.UserModel.Category, page = 1 }, new { @style = "clear: left", @class = "btn btn-danger" })
+    @Html.ActionLink("0", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 0, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("1", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 1, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("2", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 2, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("3", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 3, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("4", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 4, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("5", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 5, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("6", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 6, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("7+", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 7, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
+
+
+</div>
 @foreach (var item in Model.Cards.Take(4))
 {
     <div style="float: left; width: 280px;" id="@item.Id">
@@ -52,18 +65,9 @@ else
         manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage - 1 }, 
         new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == 1 ? "btn btn-success hidden" : "btn btn-success" })
 
-    @Html.ActionLink("All", "ShowCards", "Card", new { userName = Model.UserModel.UserName, userId = Model.UserModel.UserId, isEditable = Model.UserModel.IsEditable, category = Model.UserModel.Category, page = 1 }, new { @style = "clear: left", @class = "btn btn-danger" })
-    @Html.ActionLink("0", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 0, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("1", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 1, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("2", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 2, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("3", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 3, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("4", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 4, isEditable = Model.UserModel.IsEditable }, new{ @class = "btn btn-primary" })
-    @Html.ActionLink("5", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 5, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("6", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 6, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("7+", "ShowCards", "Card", new { userId = Model.UserModel.UserId, userName = Model.UserModel.UserName, category = Model.UserModel.Category, manacost = 7, isEditable = Model.UserModel.IsEditable }, new { @class = "btn btn-primary" })
-
+   
     @Html.ActionLink("Next", "ShowCards", "Card", new { UserName = Model.UserModel.UserName, UserId = Model.UserModel.UserId, Model.UserModel.IsEditable, category = Model.UserModel.Category,
-    manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage + 1 }, new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == Model.PageInfo.TotalPages ? "btn btn-success hidden" : "btn btn-success" })
+    manacost = Model.UserModel.Manacost, page = @Model.PageInfo.CurrentPage + 1 }, new { @style = "clear: left", @class = Model.PageInfo.CurrentPage == Model.PageInfo.TotalPages || Model.PageInfo.TotalPages == 0 ? "btn btn-success hidden" : "btn btn-success" })
 
 
 
