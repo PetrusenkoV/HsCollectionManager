@@ -94,17 +94,88 @@ namespace HsCollectionManager.Abstract
             }
         }
 
+        private List<string> CreateJoinsList(string className, bool isEditable)
+        {
+            var result = new List<string>();
 
+            if (!isEditable)
+            {
+                result.Add("Inner join UserCards u on c.id = u.cardId ");
+            }
+
+            if (className != "All")
+            {
+                result.Add("inner join Class cl on cl.id = c.class_id ");
+            }
+
+            return result;
+        }
+
+        private List<string> CreateWhereList(string className, int userId, int manacost, bool isEditable)
+        {
+            var result = new List<string>();
+
+            if (!isEditable)
+            {
+                result.Add($"u.userId = {userId} ");
+            }
+
+            if (className != "All")
+            {
+                result.Add($"cl.name = '{className}' ");
+            }
+
+            if (0 <= manacost && manacost < 7)
+            {
+                result.Add($"manacost = {manacost} ");
+            }
+
+            if (manacost >= 7)
+            {
+                result.Add("manacost >= 7");
+            }
+
+            return result;
+        }
+
+        private void AppendWhereListToQueryString(StringBuilder str, List<string> list)
+        {
+            var amountOfElementsInList = list.Count;
+
+            if (amountOfElementsInList == 0)
+            {
+                return;
+            }
+
+            str.Append("Where ");
+
+            for (int i = 0; i < amountOfElementsInList - 1; i++)
+            {
+                str.Append(list[i] + "and ");
+            }
+
+            str.Append(list[amountOfElementsInList - 1]);
+        }
+
+        private void AppendJoinsListToQueryString(StringBuilder str, List<string> list)
+        {
+            foreach (var item in list)
+            {
+                str.Append(item);
+            }
+        }
+
+        //make array of joins and where
+        //then add them to query framework
         private string QueryBuilderCards(int userId, string className, int manacost, bool isEditable, int page, int pageSize)
         {
             StringBuilder mainQuery =
                 new StringBuilder("Select c.id, c.name, c.rarity_id, c.img, c.manacost from cards c ");
 
-            mainQuery = AddUserJoinFilter(mainQuery, isEditable);
-
-            mainQuery = AddUserClassFilter(mainQuery, className, userId, isEditable);
-
-            mainQuery = AddManaCostFilter(mainQuery, manacost);
+            var joins = CreateJoinsList(className, isEditable);
+            var where = CreateWhereList(className, userId, manacost, isEditable);
+            AppendJoinsListToQueryString(mainQuery, joins);
+            AppendWhereListToQueryString(mainQuery, where);
 
             mainQuery.Append("Order By manacost, c.name " +
                              $"Offset {(page - 1) * pageSize} Rows Fetch next {pageSize} Rows only ");
@@ -116,11 +187,15 @@ namespace HsCollectionManager.Abstract
         {
             StringBuilder mainQuery = new StringBuilder("Select Count(img) from cards c ");
 
-            mainQuery = AddUserJoinFilter(mainQuery, isEditable);
+            //mainQuery = AddUserJoinFilter(mainQuery, isEditable);
 
-            mainQuery = AddUserClassFilter(mainQuery, className, userId, isEditable);
+            //mainQuery = AddUserClassFilter(mainQuery, className, userId, isEditable);
 
-            mainQuery = AddManaCostFilter(mainQuery, manacost);
+            //mainQuery = AddManaCostFilter(mainQuery, manacost);
+            var joins = CreateJoinsList(className, isEditable);
+            var where = CreateWhereList(className, userId, manacost, isEditable);
+            AppendJoinsListToQueryString(mainQuery, joins);
+            AppendWhereListToQueryString(mainQuery, where);
 
             return mainQuery.ToString();
         }
@@ -135,7 +210,7 @@ namespace HsCollectionManager.Abstract
         {
 
             string classString = isEditable ? "" : $"u.userId = {userId} ";
-           
+
             if (className != "All")
             {
                 str.Append("inner join Class cl on cl.id = c.class_id ");
